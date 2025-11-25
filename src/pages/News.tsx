@@ -1,59 +1,26 @@
+import { useState, useEffect } from 'react';
 import Layout from '@/components/Layout';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
+import { getNews, deleteNews, checkAdminAuth } from '@/utils/storage';
 
 const News = () => {
-  const news = [
-    {
-      id: 1,
-      title: 'Открытие первой линии метрополитена запланировано на декабрь',
-      date: '25 ноября 2025',
-      category: 'Транспорт',
-      content: 'Начальник метрополитена Денис объявил о завершении строительства первой очереди подземной транспортной системы. Торжественное открытие состоится в присутствии ГенСека.',
-      icon: 'Train',
-    },
-    {
-      id: 2,
-      title: 'ГенСек Сталин поздравил граждан с успешным развитием государства',
-      date: '23 ноября 2025',
-      category: 'Политика',
-      content: 'В торжественной речи Генеральный Секретарь отметил значительный прогресс в строительстве Люберцев и развитии инфраструктуры.',
-      icon: 'Megaphone',
-    },
-    {
-      id: 3,
-      title: 'Город Люберцы достиг 45% готовности',
-      date: '20 ноября 2025',
-      category: 'Строительство',
-      content: 'Главный Бригадир Карл Вагнер сообщил о достижении важной вехи в строительстве городского округа. Завершена центральная площадь.',
-      icon: 'Building2',
-    },
-    {
-      id: 4,
-      title: 'Новый набор в армию и на рабочие специальности',
-      date: '18 ноября 2025',
-      category: 'Кадры',
-      content: 'НарКом Армии Даня объявил о начале призыва. Также открыты вакансии строителей метрополитена, машинистов и фермеров.',
-      icon: 'Users',
-    },
-    {
-      id: 5,
-      title: 'Утверждён государственный гимн ЦК КПСС',
-      date: '15 ноября 2025',
-      category: 'Культура',
-      content: 'Высшее руководство утвердило текст государственного гимна. Гимн исполняется под мелодию СССР с адаптированными словами.',
-      icon: 'Music',
-    },
-    {
-      id: 6,
-      title: 'Запуск официального портала государства',
-      date: '10 ноября 2025',
-      category: 'Технологии',
-      content: 'Введён в эксплуатацию официальный веб-портал ЦК КПСС. Граждане могут ознакомиться со структурой власти и подать заявки на роли.',
-      icon: 'Globe',
-    },
-  ];
+  const [news, setNews] = useState(getNews());
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    setIsAdmin(checkAdminAuth());
+    setNews(getNews());
+  }, []);
+
+  const handleDelete = (id: string) => {
+    if (window.confirm('Вы уверены, что хотите удалить эту новость?')) {
+      deleteNews(id);
+      setNews(getNews());
+    }
+  };
 
   const categoryColors: { [key: string]: string } = {
     'Транспорт': 'bg-soviet-blue',
@@ -89,12 +56,22 @@ const News = () => {
                 
                 <div className="flex-1">
                   <div className="flex items-start justify-between mb-3">
-                    <div>
+                    <div className="flex-1">
                       <Badge className={`${categoryColors[item.category]} text-white mb-2`}>
                         {item.category}
                       </Badge>
                       <h2 className="text-2xl font-bold text-white mb-2">{item.title}</h2>
                     </div>
+                    {isAdmin && (
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => handleDelete(item.id)}
+                        className="ml-4"
+                      >
+                        <Icon name="Trash2" size={16} />
+                      </Button>
+                    )}
                   </div>
                   
                   <p className="text-white/70 mb-3">{item.content}</p>

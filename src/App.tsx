@@ -13,6 +13,7 @@ import Decrees from "./pages/Decrees";
 import Anthem from "./pages/Anthem";
 import RoleRequest from "./pages/RoleRequest";
 import Admin from "./pages/Admin";
+import Construction from "./pages/Construction";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -33,6 +34,7 @@ const App = () => (
           <Route path="/anthem" element={<Anthem />} />
           <Route path="/role-request" element={<RoleRequest />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/construction" element={<Construction />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

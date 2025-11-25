@@ -3,148 +3,149 @@ import Icon from '@/components/ui/icon';
 
 const Home = () => {
   return (
-    <div className="min-h-screen bg-soviet-dark">
-      <div className="relative">
-        <div className="absolute inset-0 bg-gradient-to-b from-soviet-red/20 to-transparent" />
-        
-        <div className="container mx-auto px-4 py-12 relative z-10">
-          <div className="text-center mb-12 animate-fade-in">
-            <div className="mb-8">
+    <div className="min-h-screen bg-[#1a1a1a]">
+      <header className="bg-[#1a1a1a] border-b-4 border-soviet-red">
+        <div className="container mx-auto px-4 py-6">
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 bg-soviet-gold rounded-full flex items-center justify-center">
               <img 
                 src="https://cdn.poehali.dev/files/79dc0cfa-ee02-462b-a75b-bbe1d8b3292d.png" 
-                alt="Флаг ЦК КПСС" 
-                className="w-48 h-48 mx-auto object-contain drop-shadow-2xl"
+                alt="Герб" 
+                className="w-10 h-10 object-contain"
               />
             </div>
-            
-            <h1 className="text-5xl md:text-7xl font-bold text-soviet-gold mb-4 tracking-wider">
-              ЦК КПСС
-            </h1>
-            <p className="text-xl md:text-2xl text-white/90 mb-2">
-              Центральный Комитет Коммунистической Партии Советского Союза
-            </p>
-            <p className="text-lg text-soviet-gold/80 mb-8">
-              Официальный портал РП сервера Minecraft
-            </p>
-            
-            <div className="flex items-center justify-center gap-3 text-white/70 mb-8">
-              <Icon name="Server" size={20} />
-              <span className="font-mono">3PM3511.aternos.me:51574</span>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            <Link to="/structure" className="group">
-              <div className="bg-soviet-gray border-2 border-soviet-red hover:border-soviet-gold transition-all duration-300 p-6 hover:scale-105">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="bg-soviet-red/20 p-3 rounded">
-                    <Icon name="Shield" size={32} className="text-soviet-gold" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-white">Структура власти</h3>
-                </div>
-                <p className="text-white/70">Руководство партии, правительство и армия</p>
-              </div>
-            </Link>
-
-            <Link to="/lubertsy" className="group">
-              <div className="bg-soviet-gray border-2 border-soviet-green hover:border-soviet-gold transition-all duration-300 p-6 hover:scale-105">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="bg-soviet-green/20 p-3 rounded">
-                    <Icon name="Building2" size={32} className="text-soviet-gold" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-white">Люберцы</h3>
-                </div>
-                <p className="text-white/70">Городской округ в стадии строительства</p>
-              </div>
-            </Link>
-
-            <Link to="/metro" className="group">
-              <div className="bg-soviet-gray border-2 border-soviet-blue hover:border-soviet-gold transition-all duration-300 p-6 hover:scale-105">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="bg-soviet-blue/20 p-3 rounded">
-                    <Icon name="Train" size={32} className="text-soviet-gold" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-white">Метрополитен</h3>
-                </div>
-                <p className="text-white/70">Правила и информация о метро</p>
-              </div>
-            </Link>
-
-            <Link to="/decrees" className="group">
-              <div className="bg-soviet-gray border-2 border-soviet-red hover:border-soviet-gold transition-all duration-300 p-6 hover:scale-105">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="bg-soviet-red/20 p-3 rounded">
-                    <Icon name="ScrollText" size={32} className="text-soviet-gold" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-white">Постановления</h3>
-                </div>
-                <p className="text-white/70">Приказы и указы руководства</p>
-              </div>
-            </Link>
-
-            <Link to="/news" className="group">
-              <div className="bg-soviet-gray border-2 border-soviet-red hover:border-soviet-gold transition-all duration-300 p-6 hover:scale-105">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="bg-soviet-red/20 p-3 rounded">
-                    <Icon name="Newspaper" size={32} className="text-soviet-gold" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-white">Новости</h3>
-                </div>
-                <p className="text-white/70">События государства</p>
-              </div>
-            </Link>
-
-            <Link to="/anthem" className="group">
-              <div className="bg-soviet-gray border-2 border-soviet-gold hover:border-soviet-gold transition-all duration-300 p-6 hover:scale-105">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="bg-soviet-gold/20 p-3 rounded">
-                    <Icon name="Music" size={32} className="text-soviet-gold" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-white">Гимн</h3>
-                </div>
-                <p className="text-white/70">Государственный гимн ЦК КПСС</p>
-              </div>
-            </Link>
-
-            <Link to="/role-request" className="group">
-              <div className="bg-soviet-gray border-2 border-soviet-green hover:border-soviet-gold transition-all duration-300 p-6 hover:scale-105">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="bg-soviet-green/20 p-3 rounded">
-                    <Icon name="UserPlus" size={32} className="text-soviet-gold" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-white">Запрос роли</h3>
-                </div>
-                <p className="text-white/70">Подать заявку на профессию</p>
-              </div>
-            </Link>
-
-            <Link to="/admin" className="group">
-              <div className="bg-soviet-gray border-2 border-soviet-gold hover:border-soviet-gold transition-all duration-300 p-6 hover:scale-105">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="bg-soviet-gold/20 p-3 rounded">
-                    <Icon name="Lock" size={32} className="text-soviet-gold" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-white">Панель администратора</h3>
-                </div>
-                <p className="text-white/70">Управление контентом</p>
-              </div>
-            </Link>
-          </div>
-
-          <div className="mt-16 text-center">
-            <div className="inline-block bg-soviet-gray border-2 border-soviet-gold px-8 py-4">
-              <p className="text-soviet-gold text-lg font-bold mb-2">ПРОЛЕТАРИИ ВСЕХ СТРАН, СОЕДИНЯЙТЕСЬ!</p>
-              <p className="text-white/70 text-sm">IP сервера: 3PM3511.aternos.me:51574</p>
+            <div>
+              <h1 className="text-3xl font-bold text-white uppercase tracking-wide">ЦК КПСС</h1>
+              <p className="text-white/70 text-sm uppercase">Центральный Комитет Коммунистической Партии Советского Союза</p>
             </div>
           </div>
         </div>
-      </div>
+      </header>
 
-      <footer className="border-t-2 border-soviet-red bg-soviet-gray/50 py-8 mt-12">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-white/60 text-sm">
-            © ЦК КПСС - Официальный сайт РП сервера Minecraft
+      <nav className="bg-soviet-red">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center gap-8 py-3">
+            <Link to="/" className="text-white hover:text-soviet-gold transition-colors font-medium">
+              Главная
+            </Link>
+            <Link to="/structure" className="text-white hover:text-soviet-gold transition-colors font-medium">
+              Руководство
+            </Link>
+            <Link to="/news" className="text-white hover:text-soviet-gold transition-colors font-medium">
+              Новости
+            </Link>
+            <Link to="/lubertsy" className="text-white hover:text-soviet-gold transition-colors font-medium">
+              Люберцы
+            </Link>
+            <Link to="/metro" className="text-white hover:text-soviet-gold transition-colors font-medium">
+              Метрополитен
+            </Link>
+          </div>
+        </div>
+      </nav>
+
+      <main className="container mx-auto px-4 py-16">
+        <div className="text-center mb-16">
+          <div className="w-32 h-32 bg-soviet-red rounded-full flex items-center justify-center mx-auto mb-6 relative">
+            <img 
+              src="https://cdn.poehali.dev/files/79dc0cfa-ee02-462b-a75b-bbe1d8b3292d.png" 
+              alt="Флаг" 
+              className="w-20 h-20 object-contain"
+            />
+            <div className="absolute -top-2 -right-2 w-12 h-12 bg-soviet-gold rounded-full flex items-center justify-center">
+              <Icon name="Star" size={24} className="text-soviet-red fill-soviet-red" />
+            </div>
+          </div>
+          <h1 className="text-6xl font-bold text-white mb-4 uppercase tracking-wide">ОФИЦИАЛЬНЫЙ ПОРТАЛ</h1>
+          <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
+            Добро пожаловать на официальный информационный портал Центрального Комитета Коммунистической Партии Советского Союза
           </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto mb-12">
+          <Link to="/structure" className="group">
+            <div className="bg-[#2a2a2a] border-2 border-white/20 hover:border-soviet-red transition-all p-8">
+              <div className="flex items-center gap-4 mb-4">
+                <Icon name="Users" size={32} className="text-soviet-red" />
+                <h3 className="text-2xl font-bold text-white uppercase">Руководство</h3>
+              </div>
+              <p className="text-white/70">Структура власти и должностные лица партии</p>
+            </div>
+          </Link>
+
+          <Link to="/news" className="group">
+            <div className="bg-[#2a2a2a] border-2 border-white/20 hover:border-soviet-red transition-all p-8">
+              <div className="flex items-center gap-4 mb-4">
+                <Icon name="Newspaper" size={32} className="text-soviet-red" />
+                <h3 className="text-2xl font-bold text-white uppercase">Новости</h3>
+              </div>
+              <p className="text-white/70">Последние постановления и официальные события</p>
+            </div>
+          </Link>
+
+          <Link to="/lubertsy" className="group">
+            <div className="bg-[#2a2a2a] border-2 border-white/20 hover:border-soviet-red transition-all p-8">
+              <div className="flex items-center gap-4 mb-4">
+                <Icon name="Building2" size={32} className="text-soviet-red" />
+                <h3 className="text-2xl font-bold text-white uppercase">Люберцы</h3>
+              </div>
+              <p className="text-white/70">Городской округ в стадии строительства</p>
+            </div>
+          </Link>
+
+          <Link to="/metro" className="group">
+            <div className="bg-[#2a2a2a] border-2 border-white/20 hover:border-soviet-red transition-all p-8">
+              <div className="flex items-center gap-4 mb-4">
+                <Icon name="Train" size={32} className="text-soviet-red" />
+                <h3 className="text-2xl font-bold text-white uppercase">Метрополитен</h3>
+              </div>
+              <p className="text-white/70">Правила и информация о метро</p>
+            </div>
+          </Link>
+        </div>
+
+        <div className="bg-[#3a2618] border-2 border-soviet-gold p-8 max-w-5xl mx-auto mb-12">
+          <div className="flex items-center gap-4 mb-4">
+            <Icon name="Server" size={32} className="text-soviet-gold" />
+            <h3 className="text-2xl font-bold text-white uppercase">IP Сервера</h3>
+          </div>
+          <div className="bg-[#2a2010] p-6 rounded">
+            <p className="text-soviet-gold font-mono text-2xl text-center">3PM3511.aternos.me:51574</p>
+            <p className="text-white/60 text-sm text-center mt-2">Официальный игровой сервер ЦК КПСС</p>
+          </div>
+        </div>
+
+        <div className="bg-[#2a1a1a] border-l-4 border-soviet-red p-8 max-w-5xl mx-auto">
+          <div className="flex items-start gap-4">
+            <Icon name="Star" size={32} className="text-soviet-gold flex-shrink-0 mt-1" />
+            <div>
+              <h3 className="text-2xl font-bold text-white uppercase mb-3">ВАЖНОЕ ОБЪЯВЛЕНИЕ</h3>
+              <p className="text-white/80 text-lg">
+                Городской округ Люберцы находится в активной стадии строительства. Приглашаем всех граждан следить за новостями о развитии города и метрополитена.
+              </p>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer className="bg-[#1a1a1a] border-t-2 border-soviet-red py-8 mt-16">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 bg-soviet-gold rounded-full flex items-center justify-center">
+                <img 
+                  src="https://cdn.poehali.dev/files/79dc0cfa-ee02-462b-a75b-bbe1d8b3292d.png" 
+                  alt="Герб" 
+                  className="w-6 h-6 object-contain"
+                />
+              </div>
+              <div>
+                <p className="text-white font-bold uppercase text-sm">ЦК КПСС</p>
+                <p className="text-white/60 text-xs">Официальный портал</p>
+              </div>
+            </div>
+            <p className="text-white/60 text-sm">© Центральный Комитет КПСС</p>
+          </div>
         </div>
       </footer>
     </div>

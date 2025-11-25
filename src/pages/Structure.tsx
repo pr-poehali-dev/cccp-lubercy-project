@@ -9,10 +9,10 @@ const officials = {
     { name: 'Алексей', role: '1й Зам ГенСека ЦК КПСС', fullRole: 'Первый Заместитель Генерального Секретаря ЦК КПСС', avatar: '' },
   ],
   government: [
-    { name: 'Карл', role: 'Главный Бригадир', fullRole: 'Главный Бригадир городского округа Люберцы', avatar: '' },
-    { name: 'Денис', role: 'Начальник Метрополитена', fullRole: 'Начальник Метрополитена', avatar: '' },
-    { name: 'Блохин', role: 'НарКом ТяжПрома', fullRole: 'Народный Комиссар Тяжёлой Промышленности', avatar: '' },
-    { name: 'Илья', role: 'Глава г.о. Энгельс', fullRole: 'Глава Городского Образования "Энгельс"', avatar: '' },
+    { name: 'Вагнер', role: 'Главный Бригадир', fullRole: 'Главный Бригадир городского округа Люберцы', avatar: '', color: 'red' },
+    { name: 'Денис', role: 'Начальник Метрополитена', fullRole: 'Начальник Метрополитена', avatar: '', color: 'gold' },
+    { name: 'Блохин', role: 'НарКом ТяжПрома', fullRole: 'Народный Комиссар Тяжёлой Промышленности', avatar: '', color: 'green' },
+    { name: 'Илья', role: 'Глава г.о. Энгельс', fullRole: 'Глава Городского Образования "Энгельс"', avatar: '', color: 'red' },
   ],
   army: [
     { name: 'Даня', role: 'НарКом Армии', fullRole: 'Народный Комиссар Армии', avatar: '' },
@@ -26,15 +26,25 @@ const officials = {
   ],
 };
 
-const OfficialCard = ({ name, role, fullRole, avatar }: { name: string; role: string; fullRole?: string; avatar?: string }) => (
+const OfficialCard = ({ name, role, fullRole, avatar, color }: { name: string; role: string; fullRole?: string; avatar?: string; color?: string }) => (
   <Card className="bg-soviet-gray border-2 border-soviet-red hover:border-soviet-gold transition-all duration-300 p-6 animate-fade-in">
     <div className="flex flex-col items-center text-center gap-4">
-      <Avatar className="w-24 h-24 border-4 border-soviet-gold">
-        <AvatarImage src={avatar} alt={name} />
-        <AvatarFallback className="bg-soviet-red text-white text-2xl font-bold">
-          {name.charAt(0)}
-        </AvatarFallback>
-      </Avatar>
+      {color ? (
+        <div className={`w-24 h-24 border-4 border-soviet-gold rounded-full flex items-center justify-center ${
+          color === 'red' ? 'bg-soviet-red' : 
+          color === 'gold' ? 'bg-soviet-gold' : 
+          'bg-soviet-green'
+        }`}>
+          <Icon name="User" size={48} className="text-white" />
+        </div>
+      ) : (
+        <Avatar className="w-24 h-24 border-4 border-soviet-gold">
+          <AvatarImage src={avatar} alt={name} />
+          <AvatarFallback className="bg-soviet-red text-white text-2xl font-bold">
+            {name.charAt(0)}
+          </AvatarFallback>
+        </Avatar>
+      )}
       
       <div>
         <h3 className="text-2xl font-bold text-soviet-gold mb-1">{name}</h3>

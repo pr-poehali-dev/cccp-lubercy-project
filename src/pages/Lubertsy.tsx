@@ -1,44 +1,50 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Layout from '@/components/Layout';
 import { Card } from '@/components/ui/card';
 import Icon from '@/components/ui/icon';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { getLubertsyStatus, getLubertsyPhotos, getLubertsyNews } from '@/utils/storage';
+import { checkAdminAuth } from '@/utils/adminAuth';
 
 const Lubertsy = () => {
-  const constructionStatus = {
-    status: 'В стадии строительства',
-    progress: 45,
-    startDate: '15 октября 2025',
-  };
+  const navigate = useNavigate();
+  const [constructionStatus, setConstructionStatus] = useState(getLubertsyStatus());
+  const [gallery, setGallery] = useState(getLubertsyPhotos());
+  const [news, setNews] = useState(getLubertsyNews());
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    setIsAdmin(checkAdminAuth());
+    setConstructionStatus(getLubertsyStatus());
+    setGallery(getLubertsyPhotos());
+    setNews(getLubertsyNews());
+  }, []);
 
   const cityHead = {
-    name: 'Карл Вагнер',
+    name: 'Вагнер',
     role: 'Главный Бригадир городского округа Люберцы',
     description: 'Руководит строительством и развитием города',
   };
-
-  const gallery = [];
-
-  const news = [
-    {
-      id: 1,
-      title: 'Начато строительство центральной площади',
-      date: '20 ноября 2025',
-      content: 'Завершена разметка территории под центральную площадь города',
-    },
-    {
-      id: 2,
-      title: 'Утверждён генеральный план застройки',
-      date: '15 ноября 2025',
-      content: 'ГенСек ЦК КПСС утвердил окончательный план развития Люберцев',
-    },
-  ];
 
   return (
     <Layout>
       <div className="container mx-auto px-4 py-12">
         <div className="text-center mb-12 animate-fade-in">
-          <h1 className="text-5xl font-bold text-soviet-gold mb-4">Городской округ Люберцы</h1>
+          <div className="flex items-center justify-center gap-4 mb-4">
+            <h1 className="text-5xl font-bold text-soviet-gold">Городской округ Люберцы</h1>
+            {isAdmin && (
+              <Button
+                onClick={() => navigate('/admin')}
+                className="bg-soviet-gold hover:bg-soviet-gold/80 text-soviet-dark"
+              >
+                <Icon name="Settings" size={20} className="mr-2" />
+                Редактировать
+              </Button>
+            )}
+          </div>
           <Badge className="bg-soviet-green text-white text-lg px-6 py-2">
             {constructionStatus.status}
           </Badge>
@@ -82,7 +88,7 @@ const Lubertsy = () => {
             <Card className="bg-soviet-gray border-2 border-soviet-blue p-6 animate-fade-in">
               <div className="flex items-center gap-3 mb-6">
                 <Icon name="Image" size={32} className="text-soviet-gold" />
-                <h2 className="text-3xl font-bold text-white">Галерея строительства</h2>
+                <h2 className="text-3xl font-bold text-white">Фото города</h2>
               </div>
               
               {gallery.length === 0 ? (
@@ -93,33 +99,35 @@ const Lubertsy = () => {
                 </div>
               ) : (
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {gallery.map((photo, idx) => (
-                    <div key={idx} className="aspect-square bg-soviet-dark rounded overflow-hidden">
-                      <img src={photo} alt={`Строительство ${idx + 1}`} className="w-full h-full object-cover" />
+                  {gallery.map((photo) => (
+                    <div key={photo.id} className="aspect-square bg-soviet-dark rounded overflow-hidden">
+                      <img src={photo.url} alt={photo.caption} className="w-full h-full object-cover" />
                     </div>
                   ))}
                 </div>
               )}
             </Card>
 
-            <Card className="bg-soviet-gray border-2 border-soviet-red p-6 animate-fade-in">
-              <div className="flex items-center gap-3 mb-6">
-                <Icon name="Newspaper" size={32} className="text-soviet-gold" />
-                <h2 className="text-3xl font-bold text-white">Новости города</h2>
-              </div>
-              
-              <div className="space-y-4">
-                {news.map((item) => (
-                  <div key={item.id} className="bg-soviet-dark p-4 rounded border-l-4 border-soviet-gold">
-                    <div className="flex items-start justify-between mb-2">
-                      <h3 className="text-white font-bold text-lg">{item.title}</h3>
-                      <span className="text-white/60 text-sm whitespace-nowrap ml-4">{item.date}</span>
+            {news.length > 0 && (
+              <Card className="bg-soviet-gray border-2 border-soviet-red p-6 animate-fade-in">
+                <div className="flex items-center gap-3 mb-6">
+                  <Icon name="Newspaper" size={32} className="text-soviet-gold" />
+                  <h2 className="text-3xl font-bold text-white">Новости города</h2>
+                </div>
+                
+                <div className="space-y-4">
+                  {news.map((item) => (
+                    <div key={item.id} className="bg-soviet-dark p-4 rounded border-l-4 border-soviet-gold">
+                      <div className="flex items-start justify-between mb-2">
+                        <h3 className="text-white font-bold text-lg">{item.title}</h3>
+                        <span className="text-white/60 text-sm whitespace-nowrap ml-4">{item.date}</span>
+                      </div>
+                      <p className="text-white/70">{item.content}</p>
                     </div>
-                    <p className="text-white/70">{item.content}</p>
-                  </div>
-                ))}
-              </div>
-            </Card>
+                  ))}
+                </div>
+              </Card>
+            )}
           </div>
 
           <div>
@@ -132,7 +140,7 @@ const Lubertsy = () => {
               <div className="text-center">
                 <Avatar className="w-32 h-32 mx-auto mb-4 border-4 border-soviet-gold">
                   <AvatarFallback className="bg-soviet-red text-white text-4xl font-bold">
-                    К
+                    В
                   </AvatarFallback>
                 </Avatar>
                 

@@ -1,8 +1,22 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Layout from '@/components/Layout';
 import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
+import { getMetroInfo } from '@/utils/storage';
+import { checkAdminAuth } from '@/utils/adminAuth';
 
 const Metro = () => {
+  const navigate = useNavigate();
+  const [metroInfo, setMetroInfo] = useState(getMetroInfo());
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    setIsAdmin(checkAdminAuth());
+    setMetroInfo(getMetroInfo());
+  }, []);
+
   const rules = [
     { id: 1, title: 'Соблюдайте порядок', description: 'Не бегайте по эскалаторам и платформам' },
     { id: 2, title: 'Безопасность', description: 'Стойте за жёлтой линией при подходе поезда' },
@@ -19,7 +33,18 @@ const Metro = () => {
           <div className="mb-6">
             <Icon name="Train" size={64} className="text-soviet-gold mx-auto mb-4" />
           </div>
-          <h1 className="text-5xl font-bold text-soviet-gold mb-4">Метрополитен ЦК КПСС</h1>
+          <div className="flex items-center justify-center gap-4 mb-4">
+            <h1 className="text-5xl font-bold text-soviet-gold">Метрополитен ЦК КПСС</h1>
+            {isAdmin && (
+              <Button
+                onClick={() => navigate('/admin')}
+                className="bg-soviet-gold hover:bg-soviet-gold/80 text-soviet-dark"
+              >
+                <Icon name="Settings" size={20} className="mr-2" />
+                Редактировать
+              </Button>
+            )}
+          </div>
           <p className="text-white/70 text-lg">Скоростная подземная транспортная система</p>
         </div>
 
@@ -39,17 +64,17 @@ const Metro = () => {
               <div className="bg-soviet-dark p-6 rounded text-center">
                 <Icon name="MapPin" size={32} className="text-soviet-gold mx-auto mb-3" />
                 <p className="text-white/60 text-sm mb-1">Станций</p>
-                <p className="text-white text-2xl font-bold">В разработке</p>
+                <p className="text-white text-2xl font-bold">{metroInfo.stations}</p>
               </div>
               <div className="bg-soviet-dark p-6 rounded text-center">
                 <Icon name="Route" size={32} className="text-soviet-gold mx-auto mb-3" />
                 <p className="text-white/60 text-sm mb-1">Линий</p>
-                <p className="text-white text-2xl font-bold">В разработке</p>
+                <p className="text-white text-2xl font-bold">{metroInfo.lines}</p>
               </div>
               <div className="bg-soviet-dark p-6 rounded text-center">
                 <Icon name="Clock" size={32} className="text-soviet-gold mx-auto mb-3" />
-                <p className="text-white/60 text-sm mb-1">Режим работы</p>
-                <p className="text-white text-2xl font-bold">24/7</p>
+                <p className="text-white/60 text-sm mb-1">Статус</p>
+                <p className="text-white text-2xl font-bold">{metroInfo.status}</p>
               </div>
             </div>
           </Card>

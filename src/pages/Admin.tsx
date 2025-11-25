@@ -9,15 +9,23 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import Icon from '@/components/ui/icon';
+import { loginAdmin, logoutAdmin, checkAdminAuth } from '@/utils/adminAuth';
+import { addNews, addDecree, saveLubertsyStatus, getLubertsyStatus, saveMetroInfo, getMetroInfo } from '@/utils/storage';
 
 const Admin = () => {
   const { toast } = useToast();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loginData, setLoginData] = useState({ login: '', password: '' });
+  const [isAuthenticated, setIsAuthenticated] = useState(checkAdminAuth());
+  const [password, setPassword] = useState('');
+
+  // Forms state
+  const [newsForm, setNewsForm] = useState({ title: '', content: '', category: '', icon: '' });
+  const [decreeForm, setDecreeForm] = useState({ number: '', title: '', content: '', author: '' });
+  const [lubertsyStatus, setLubertsyStatus] = useState(getLubertsyStatus());
+  const [metroInfo, setMetroInfo] = useState(getMetroInfo());
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (loginData.login === 'admin' && loginData.password === 'cccp2025') {
+    if (loginAdmin(password)) {
       setIsAuthenticated(true);
       toast({
         title: 'Вход выполнен',
@@ -26,10 +34,67 @@ const Admin = () => {
     } else {
       toast({
         title: 'Ошибка входа',
-        description: 'Неверный логин или пароль',
+        description: 'Неверный пароль',
         variant: 'destructive',
       });
     }
+  };
+
+  const handleLogout = () => {
+    logoutAdmin();
+    setIsAuthenticated(false);
+    toast({ title: 'Выход выполнен' });
+  };
+
+  const handleAddNews = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newsForm.title || !newsForm.content || !newsForm.category) {
+      toast({ title: 'Ошибка', description: 'Заполните все поля', variant: 'destructive' });
+      return;
+    }
+    
+    addNews({
+      title: newsForm.title,
+      content: newsForm.content,
+      category: newsForm.category,
+      icon: newsForm.icon || 'Newspaper',
+      date: new Date().toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }),
+    });
+    
+    setNewsForm({ title: '', content: '', category: '', icon: '' });
+    toast({ title: 'Новость опубликована' });
+  };
+
+  const handleAddDecree = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!decreeForm.number || !decreeForm.title || !decreeForm.content || !decreeForm.author) {
+      toast({ title: 'Ошибка', description: 'Заполните все поля', variant: 'destructive' });
+      return;
+    }
+    
+    addDecree({
+      number: decreeForm.number,
+      title: decreeForm.title,
+      content: decreeForm.content,
+      author: decreeForm.author,
+      status: 'Действует',
+      date: new Date().toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }),
+    });
+    
+    setDecreeForm({ number: '', title: '', content: '', author: '' });
+    toast({ title: 'Постановление опубликовано' });
+  };
+
+  const handleSaveLubertsyStatus = (e: React.FormEvent) => {
+    e.preventDefault();
+    saveLubertsyStatus(lubertsyStatus);
+    toast({ title: 'Статус Люберцев обновлён' });
+  };
+
+  const handleSaveMetroInfo = (e: React.FormEvent) => {
+    e.preventDefault();
+    saveMetroInfo(metroInfo);
+    toast({ title: 'Информация о метро обновлена' });
   };
 
   if (!isAuthenticated) {
@@ -43,29 +108,17 @@ const Admin = () => {
                   <Icon name="Lock" size={40} className="text-soviet-gold" />
                 </div>
                 <h1 className="text-3xl font-bold text-soviet-gold mb-2">Панель администратора</h1>
-                <p className="text-white/70">Введите учётные данные для входа</p>
+                <p className="text-white/70">Введите пароль для входа</p>
               </div>
 
               <form onSubmit={handleLogin} className="space-y-4">
-                <div>
-                  <Label htmlFor="login" className="text-white">Логин</Label>
-                  <Input
-                    id="login"
-                    value={loginData.login}
-                    onChange={(e) => setLoginData({ ...loginData, login: e.target.value })}
-                    className="bg-soviet-dark border-soviet-red text-white"
-                    placeholder="admin"
-                    required
-                  />
-                </div>
-
                 <div>
                   <Label htmlFor="password" className="text-white">Пароль</Label>
                   <Input
                     id="password"
                     type="password"
-                    value={loginData.password}
-                    onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     className="bg-soviet-dark border-soviet-red text-white"
                     placeholder="••••••••"
                     required
@@ -75,10 +128,6 @@ const Admin = () => {
                 <Button type="submit" className="w-full bg-soviet-red hover:bg-soviet-red/80 text-white">
                   Войти
                 </Button>
-
-                <p className="text-white/50 text-xs text-center mt-4">
-                  Логин: admin | Пароль: cccp2025
-                </p>
               </form>
             </Card>
           </div>
@@ -93,7 +142,7 @@ const Admin = () => {
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-4xl font-bold text-soviet-gold">Панель администратора</h1>
           <Button 
-            onClick={() => setIsAuthenticated(false)}
+            onClick={handleLogout}
             variant="outline"
             className="border-soviet-red text-white hover:bg-soviet-red/20"
           >
@@ -116,25 +165,62 @@ const Admin = () => {
               <Icon name="Building2" size={16} className="mr-2" />
               Люберцы
             </TabsTrigger>
-            <TabsTrigger value="photos" className="data-[state=active]:bg-soviet-red">
-              <Icon name="Image" size={16} className="mr-2" />
-              Фотографии
+            <TabsTrigger value="metro" className="data-[state=active]:bg-soviet-red">
+              <Icon name="Train" size={16} className="mr-2" />
+              Метро
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="news">
             <Card className="bg-soviet-gray border-2 border-soviet-red p-6">
               <h2 className="text-2xl font-bold text-white mb-6">Добавить новость</h2>
-              <form className="space-y-4">
+              <form onSubmit={handleAddNews} className="space-y-4">
                 <div>
                   <Label className="text-white">Заголовок</Label>
-                  <Input className="bg-soviet-dark border-soviet-red text-white" placeholder="Введите заголовок новости" />
+                  <Input 
+                    className="bg-soviet-dark border-soviet-red text-white" 
+                    placeholder="Введите заголовок новости" 
+                    value={newsForm.title}
+                    onChange={(e) => setNewsForm({ ...newsForm, title: e.target.value })}
+                    required
+                  />
+                </div>
+                <div>
+                  <Label className="text-white">Категория</Label>
+                  <Select value={newsForm.category} onValueChange={(value) => setNewsForm({ ...newsForm, category: value })}>
+                    <SelectTrigger className="bg-soviet-dark border-soviet-red text-white">
+                      <SelectValue placeholder="Выберите категорию" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-soviet-gray border-soviet-red">
+                      <SelectItem value="Политика">Политика</SelectItem>
+                      <SelectItem value="Транспорт">Транспорт</SelectItem>
+                      <SelectItem value="Кадры">Кадры</SelectItem>
+                      <SelectItem value="Строительство">Строительство</SelectItem>
+                      <SelectItem value="Культура">Культура</SelectItem>
+                      <SelectItem value="Технологии">Технологии</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label className="text-white">Иконка (необязательно)</Label>
+                  <Input 
+                    className="bg-soviet-dark border-soviet-red text-white" 
+                    placeholder="Train, Building2, Users и т.д." 
+                    value={newsForm.icon}
+                    onChange={(e) => setNewsForm({ ...newsForm, icon: e.target.value })}
+                  />
                 </div>
                 <div>
                   <Label className="text-white">Содержание</Label>
-                  <Textarea className="bg-soviet-dark border-soviet-red text-white min-h-32" placeholder="Текст новости" />
+                  <Textarea 
+                    className="bg-soviet-dark border-soviet-red text-white min-h-32" 
+                    placeholder="Текст новости" 
+                    value={newsForm.content}
+                    onChange={(e) => setNewsForm({ ...newsForm, content: e.target.value })}
+                    required
+                  />
                 </div>
-                <Button className="bg-soviet-red hover:bg-soviet-red/80">
+                <Button type="submit" className="bg-soviet-red hover:bg-soviet-red/80">
                   <Icon name="Plus" size={20} className="mr-2" />
                   Опубликовать новость
                 </Button>
@@ -145,32 +231,50 @@ const Admin = () => {
           <TabsContent value="decrees">
             <Card className="bg-soviet-gray border-2 border-soviet-red p-6">
               <h2 className="text-2xl font-bold text-white mb-6">Добавить постановление</h2>
-              <form className="space-y-4">
+              <form onSubmit={handleAddDecree} className="space-y-4">
                 <div>
                   <Label className="text-white">Номер постановления</Label>
-                  <Input className="bg-soviet-dark border-soviet-red text-white" placeholder="№..." />
+                  <Input 
+                    className="bg-soviet-dark border-soviet-red text-white" 
+                    placeholder="№..." 
+                    value={decreeForm.number}
+                    onChange={(e) => setDecreeForm({ ...decreeForm, number: e.target.value })}
+                    required
+                  />
                 </div>
                 <div>
                   <Label className="text-white">Заголовок</Label>
-                  <Input className="bg-soviet-dark border-soviet-red text-white" placeholder="О..." />
+                  <Input 
+                    className="bg-soviet-dark border-soviet-red text-white" 
+                    placeholder="О..." 
+                    value={decreeForm.title}
+                    onChange={(e) => setDecreeForm({ ...decreeForm, title: e.target.value })}
+                    required
+                  />
                 </div>
                 <div>
                   <Label className="text-white">Содержание</Label>
-                  <Textarea className="bg-soviet-dark border-soviet-red text-white min-h-40" placeholder="Полный текст постановления" />
+                  <Textarea 
+                    className="bg-soviet-dark border-soviet-red text-white min-h-40" 
+                    placeholder="Полный текст постановления" 
+                    value={decreeForm.content}
+                    onChange={(e) => setDecreeForm({ ...decreeForm, content: e.target.value })}
+                    required
+                  />
                 </div>
                 <div>
                   <Label className="text-white">Подписант</Label>
-                  <Select>
+                  <Select value={decreeForm.author} onValueChange={(value) => setDecreeForm({ ...decreeForm, author: value })}>
                     <SelectTrigger className="bg-soviet-dark border-soviet-red text-white">
                       <SelectValue placeholder="Выберите подписанта" />
                     </SelectTrigger>
                     <SelectContent className="bg-soviet-gray border-soviet-red">
-                      <SelectItem value="stalin">ГенСек Сталин</SelectItem>
-                      <SelectItem value="alexey">1й Зам ГенСека Алексей</SelectItem>
+                      <SelectItem value="ГенСек Сталин">ГенСек Сталин</SelectItem>
+                      <SelectItem value="1й Зам ГенСека Алексей">1й Зам ГенСека Алексей</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-                <Button className="bg-soviet-red hover:bg-soviet-red/80">
+                <Button type="submit" className="bg-soviet-red hover:bg-soviet-red/80">
                   <Icon name="Plus" size={20} className="mr-2" />
                   Опубликовать постановление
                 </Button>
@@ -181,33 +285,36 @@ const Admin = () => {
           <TabsContent value="lubertsy">
             <Card className="bg-soviet-gray border-2 border-soviet-green p-6">
               <h2 className="text-2xl font-bold text-white mb-6">Управление городом Люберцы</h2>
-              <form className="space-y-4">
+              <form onSubmit={handleSaveLubertsyStatus} className="space-y-4">
                 <div>
                   <Label className="text-white">Статус строительства</Label>
-                  <Select>
-                    <SelectTrigger className="bg-soviet-dark border-soviet-red text-white">
-                      <SelectValue placeholder="В стадии строительства" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-soviet-gray border-soviet-red">
-                      <SelectItem value="construction">В стадии строительства</SelectItem>
-                      <SelectItem value="ready">Город готов</SelectItem>
-                      <SelectItem value="expanding">Расширение</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <Input 
+                    className="bg-soviet-dark border-soviet-red text-white" 
+                    placeholder="В стадии строительства" 
+                    value={lubertsyStatus.status}
+                    onChange={(e) => setLubertsyStatus({ ...lubertsyStatus, status: e.target.value })}
+                  />
                 </div>
                 <div>
-                  <Label className="text-white">Прогресс строительства (%)</Label>
-                  <Input type="number" className="bg-soviet-dark border-soviet-red text-white" placeholder="45" min="0" max="100" />
+                  <Label className="text-white">Прогресс (%)</Label>
+                  <Input 
+                    type="number" 
+                    min="0" 
+                    max="100" 
+                    className="bg-soviet-dark border-soviet-red text-white" 
+                    value={lubertsyStatus.progress}
+                    onChange={(e) => setLubertsyStatus({ ...lubertsyStatus, progress: parseInt(e.target.value) || 0 })}
+                  />
                 </div>
                 <div>
-                  <Label className="text-white">Новость о городе</Label>
-                  <Input className="bg-soviet-dark border-soviet-red text-white" placeholder="Заголовок новости" />
+                  <Label className="text-white">Дата начала</Label>
+                  <Input 
+                    className="bg-soviet-dark border-soviet-red text-white" 
+                    value={lubertsyStatus.startDate}
+                    onChange={(e) => setLubertsyStatus({ ...lubertsyStatus, startDate: e.target.value })}
+                  />
                 </div>
-                <div>
-                  <Label className="text-white">Содержание</Label>
-                  <Textarea className="bg-soviet-dark border-soviet-red text-white min-h-24" />
-                </div>
-                <Button className="bg-soviet-green hover:bg-soviet-green/80">
+                <Button type="submit" className="bg-soviet-green hover:bg-soviet-green/80">
                   <Icon name="Save" size={20} className="mr-2" />
                   Сохранить изменения
                 </Button>
@@ -215,34 +322,49 @@ const Admin = () => {
             </Card>
           </TabsContent>
 
-          <TabsContent value="photos">
+          <TabsContent value="metro">
             <Card className="bg-soviet-gray border-2 border-soviet-blue p-6">
-              <h2 className="text-2xl font-bold text-white mb-6">Загрузить фотографии</h2>
-              <div className="space-y-4">
+              <h2 className="text-2xl font-bold text-white mb-6">Управление метрополитеном</h2>
+              <form onSubmit={handleSaveMetroInfo} className="space-y-4">
                 <div>
-                  <Label className="text-white">Категория</Label>
-                  <Select>
+                  <Label className="text-white">Количество станций</Label>
+                  <Input 
+                    type="number" 
+                    min="0" 
+                    className="bg-soviet-dark border-soviet-red text-white" 
+                    value={metroInfo.stations}
+                    onChange={(e) => setMetroInfo({ ...metroInfo, stations: parseInt(e.target.value) || 0 })}
+                  />
+                </div>
+                <div>
+                  <Label className="text-white">Количество линий</Label>
+                  <Input 
+                    type="number" 
+                    min="0" 
+                    className="bg-soviet-dark border-soviet-red text-white" 
+                    value={metroInfo.lines}
+                    onChange={(e) => setMetroInfo({ ...metroInfo, lines: parseInt(e.target.value) || 0 })}
+                  />
+                </div>
+                <div>
+                  <Label className="text-white">Статус</Label>
+                  <Select value={metroInfo.status} onValueChange={(value) => setMetroInfo({ ...metroInfo, status: value })}>
                     <SelectTrigger className="bg-soviet-dark border-soviet-red text-white">
-                      <SelectValue placeholder="Выберите категорию" />
+                      <SelectValue placeholder="Выберите статус" />
                     </SelectTrigger>
                     <SelectContent className="bg-soviet-gray border-soviet-red">
-                      <SelectItem value="lubertsy">Строительство Люберцев</SelectItem>
-                      <SelectItem value="metro">Метрополитен</SelectItem>
-                      <SelectItem value="events">Мероприятия</SelectItem>
-                      <SelectItem value="other">Прочее</SelectItem>
+                      <SelectItem value="В разработке">В разработке</SelectItem>
+                      <SelectItem value="Строится">Строится</SelectItem>
+                      <SelectItem value="Готово">Готово</SelectItem>
+                      <SelectItem value="24/7">24/7</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="border-2 border-dashed border-soviet-red rounded-lg p-12 text-center bg-soviet-dark/50 hover:bg-soviet-dark cursor-pointer transition-colors">
-                  <Icon name="Upload" size={48} className="text-soviet-gold mx-auto mb-4" />
-                  <p className="text-white mb-2">Нажмите или перетащите фото</p>
-                  <p className="text-white/60 text-sm">Поддерживаются форматы: JPG, PNG</p>
-                </div>
-                <Button className="bg-soviet-blue hover:bg-soviet-blue/80 w-full">
-                  <Icon name="Upload" size={20} className="mr-2" />
-                  Загрузить фотографии
+                <Button type="submit" className="bg-soviet-blue hover:bg-soviet-blue/80">
+                  <Icon name="Save" size={20} className="mr-2" />
+                  Сохранить изменения
                 </Button>
-              </div>
+              </form>
             </Card>
           </TabsContent>
         </Tabs>
